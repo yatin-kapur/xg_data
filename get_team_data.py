@@ -37,7 +37,7 @@ def get_data(team, year):
     return data
 
 
-def retrieve_game_states(data, team):
+def retrieve_gs(data, team):
     game_states = data['gameState']
 
     # make data frame
@@ -91,16 +91,17 @@ def retrieve_xg(data, team):
         v['S'] = v.pop('shots')
         v['G'] = v.pop('goals')
 
-
     xg_data = pd.DataFrame(xg_data).transpose()
     xg_data['xGD'] = xg_data['xG'] - xg_data['xGA']
+    xg_data['xG/S'] = xg_data['xG']/xg_data['S']
+    xg_data['xGA/S'] = xg_data['xGA']/xg_data['SA']
     league_data_xg[team] = xg_data
 
 
 def write_data(teams):
-    writer = pd.ExcelWriter('epl2018_game_states.xlsx')
+    writer = pd.ExcelWriter('epl2018.xlsx')
     for team in teams:
-        league_data_gs[team].to_excel(writer, team + '_gameState')
+        league_data_gs[team].to_excel(writer, team + '_gS')
         league_data_xg[team].to_excel(writer, team + '_xG')
     writer.save()
 
@@ -118,7 +119,7 @@ team_data = {}
 for p in teams:
     team_data[p] = get_data(p, '2018')
     retrieve_xg(team_data[p], p)
-    retrieve_game_states(team_data[p], p)
+    retrieve_gs(team_data[p], p)
 
 
 write_data(teams)

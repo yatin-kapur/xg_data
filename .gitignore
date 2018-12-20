@@ -3,3 +3,5 @@
 /.ropeproject/*
 /.ipynb_checkpoints/*
 *.xlsx
+config.ini
+dbconfig.py

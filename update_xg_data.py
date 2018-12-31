@@ -73,7 +73,6 @@ class Team:
         player_data = divs[-1].text.split('(')[-1][1:-3]
 
         data = self._parse_json(player_data)
-        print(data)
         for player in data:
             player['G'] = player.pop('goals')
             player['S'] = player.pop('shots')
@@ -117,7 +116,7 @@ def get_teams(competition, year):
 
 
 def main():
-    L = 'EPL'
+    L = 'Serie_A'
     year = '2018'
     teams = get_teams(L, year)
     f = open(L + '_updated.txt', 'r')
@@ -137,7 +136,4 @@ def main():
     print(L + ' all data updated')
 
 if __name__ == '__main__':
-    #main()
-    c = Team('Chelsea', '2018', 'EPL')
-    c.insert_team_data()
-    c.insert_player_data()
+    main()

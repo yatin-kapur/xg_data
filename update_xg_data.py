@@ -1,6 +1,7 @@
 from requests_html import HTMLSession
 import json
 import insert
+import argparse
 
 
 class Team:
@@ -116,16 +117,26 @@ def get_teams(competition, year):
 
 
 def main():
-    L = 'Serie_A'
-    year = '2018'
-    teams = get_teams(L, year)
-    f = open(L + '_updated.txt', 'r')
-    updated = [x[:-1] for x in f]
+    parser = argparse.ArgumentParser(description='Update xG data for Leagues')
+    parser.add_argument('-l', help='select league (EPL, Ligue_1, Serie_A, \
+                        La_Liga, Bundesliga)', required=True)
+    parser.add_argument('-s', help='select season in the format 20xx',
+                        required=True)
+    parser.add_argument('-t', help='select team')
+
+    args = vars(parser.parse_args())
+
+    year = args['s']
+    L = args['l']
+    if args['t'] is not None:
+        teams = [args['t']]
+    else:
+        teams = get_teams(L, year)
 
     for team in teams:
-        if team in updated:
-            print(team + ' skipped')
-            continue
+        # if team in updated:
+        #    print(team + ' skipped')
+        #    continue
         try:
             T = Team(team, year, L)
             T.insert_team_data()

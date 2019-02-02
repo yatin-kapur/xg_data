@@ -20,7 +20,6 @@ def main():
     if args['t'] is not None:
         teams = [args['t']]
     else:
-
         teams = fetch_teams.get_teams(L, year)
 
     for team in teams:

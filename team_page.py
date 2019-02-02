@@ -1,5 +1,6 @@
 from requests_html import HTMLSession
-import json
+from parse_json import parse_json
+from get_session import get_session
 import insert
 
 
@@ -8,50 +9,17 @@ class Team:
         self.competition = competition
         self.name = name
         self.year = year
+        self.page = get_session('team/' + team + '/' + str(year))
         self.team_data = self._fetch_team_data()
         self.players = self._fetch_player_data()
         self.matches = self._fetch_match_data()
 
-    def _parse_json(self, data):
-        # replace all hex codes with ascii
-        data = data.replace('\\x7B', '{')
-        data = data.replace('\\x7D', '}')
-        data = data.replace('\\x3A', ':')
-        data = data.replace('\\x22', '"')
-        data = data.replace('\\x20', ' ')
-        data = data.replace('\\x2B', '+')
-        data = data.replace('\\x2D', '-')
-        data = data.replace('\\x3C', '<')
-        data = data.replace('\\x3E', '>')
-        data = data.replace('\\x5B', '[')
-        data = data.replace('\\x5D', ']')
-        data = data.replace('\\x5C', '\\')
-        data = data.replace('\\x26', '&')
-        data = data.replace('\\x23', '#')
-        data = data.replace('\\x3B', ';')
-        data = data.replace('&#039;', "'")
-
-        # dictionary of data
-        data = json.loads(data)
-
-        return data
-
-    def _get_session(self):
-        session = HTMLSession()
-        url = 'https://understat.com/team/%s/%s' % (self.name, self.year)
-        page = session.get(url)
-        page.html.encoding = 'ISO-8859-1'
-        page.html.render()
-
-        return page
-
     def _fetch_team_data(self):
-        page = self._get_session()
         # get json data for team
-        divs = page.html.find('.block-content')
+        divs = self.page.html.find('.block-content')
         team_data_script = divs[1].text.split('(')[-1][1:-3]
 
-        data = self._parse_json(team_data_script)
+        data = parse_json(team_data_script)
 
         # flattening dictionary and putting correct labels
         for k, v in data.items():
@@ -68,12 +36,10 @@ class Team:
         return data
 
     def _fetch_player_data(self):
-        page = self._get_session()
-        # get json data for players
-        divs = page.html.find('.block-content')
+        divs = self.page.html.find('.block-content')
         player_data = divs[-1].text.split('(')[-1][1:-3]
 
-        data = self._parse_json(player_data)
+        data = parse_json(player_data)
         for player in data:
             player['G'] = player.pop('goals')
             player['S'] = player.pop('shots')
@@ -84,12 +50,10 @@ class Team:
         return data
 
     def _fetch_match_data(self):
-        page = self._get_session()
-        # get json data for players
-        divs = page.html.find('.block-content')
+        divs = self.page.html.find('.block-content')
         match_data = divs[0].text.split('(')[-1][1:-3]
 
-        data = self._parse_json(match_data)
+        data = parse_json(match_data)
         # flatten with proper labels
         for match in data:
             if not match['isResult']:

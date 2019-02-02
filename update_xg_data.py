@@ -1,5 +1,6 @@
-import team_page
-import fetch_teams
+from team_page import Team
+from league_page import League
+from fetch_teams import get_teams
 import argparse
 
 
@@ -9,26 +10,34 @@ def main():
                         La_Liga, Bundesliga)', required=True)
     parser.add_argument('-s', help='select season in the format 20xx',
                         required=True)
-    parser.add_argument('-t', help='select team')
+    parser.add_argument('-t', help='type team name; "all" to update all \
+                        teams; "none" to only update league', required=True)
 
+    # parse arguments
     args = vars(parser.parse_args())
-
     year = args['s']
-    L = args['l']
+    competition = args['l']
+    teams_arg = args['t']
+
+    # update league positions data
+    L = League(competition, year)
+    L.insert_league_records()
+    print(competition + ' league records updated')
 
     # update teams in league
-    if args['t'] is not None:
-        teams = [args['t']]
+    if teams_arg == 'all':
+        teams = get_teams(competition, year)
+    elif teams_arg == 'none':
+        teams = []
     else:
-        teams = fetch_teams.get_teams(L, year)
+        # specified team
+        teams = teams_arg
 
+    # update teams selected
     for team in teams:
         print('starting ' + team)
-        # if team in updated:
-        #    print(team + ' skipped')
-        #    continue
         try:
-            T = team_page.Team(team, year, L)
+            T = Team(team, year, L)
             T.insert_team_data()
             print('team data done')
             T.insert_player_data()
@@ -37,8 +46,7 @@ def main():
             print('match data done')
         except:
             print(team + ' messed up')
-        print(team)
-    print(L + ' all data updated')
+        print(team + ' updated')
 
 if __name__ == '__main__':
     main()

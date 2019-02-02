@@ -1,4 +1,3 @@
-from requests_html import HTMLSession
 from parse_json import parse_json
 from get_session import get_session
 import insert

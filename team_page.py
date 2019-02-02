@@ -101,4 +101,6 @@ class Team:
             if not match['isResult']:
                 break
             del match['isResult']
+            match['competition'] = self.competition
+            match['season'] = self.year
             insert.insert('match_data', **match)

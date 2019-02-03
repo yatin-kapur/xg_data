@@ -21,7 +21,8 @@ def main():
                         action='store_true')
     parser.add_argument('-m', help='enter match id to update match')
     parser.add_argument('--all-shots', help='update all the shots from \
-                        matches in match_data table', action='store_true')
+                        matches in match_data table that are not in shots \
+                        table already', action='store_true')
 
     # parse arguments
     args = vars(parser.parse_args())

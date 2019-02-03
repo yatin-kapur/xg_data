@@ -11,7 +11,7 @@ def main():
     parser = argparse.ArgumentParser(description='Update xG data for Leagues')
     parser.add_argument('-l', help='select league (EPL, Ligue_1, Serie_A, \
                         La_Liga, Bundesliga)')
-    parser.add_argument('--only-teams', help="don't update league data, just \
+    parser.add_argument('--skip-league', help="don't update league data, just \
                         teams", action='store_false')
     parser.add_argument('-s', help='select season in the format 20xx')
     parser.add_argument('-t', help='specify which team to update')
@@ -42,7 +42,7 @@ def main():
         query_comp = "('" + competition + "')"
 
         # start league updating jobs via object
-        if args['only_teams']:
+        if args['skip_league']:
             print(colored('starting', 'yellow'), colored(competition, 'blue'))
             L = League(competition, year)
             L.insert_league_records()

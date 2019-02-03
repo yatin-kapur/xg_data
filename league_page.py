@@ -22,7 +22,7 @@ class League:
             team_title = team.pop('title')
             # get the matchday data
             matchdays = team['history']
-            for md in matchdays:
+            for i, md in enumerate(matchdays):
                 md['ppda_att'] = md['ppda']['att']
                 md['ppda_def'] = md['ppda']['def']
                 md['ppda_allowed_att'] = md['ppda_allowed']['att']
@@ -32,6 +32,7 @@ class League:
                 md['id'] = team_id
                 md['title'] = team_title
                 md['league'] = self.competition
+                md['md'] = i + 1
 
         return data
 
@@ -40,4 +41,3 @@ class League:
         for i, team in data_dict.items():
             for md in team['history']:
                 insert.insert('league_records', **md)
-

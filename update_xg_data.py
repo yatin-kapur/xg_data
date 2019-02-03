@@ -11,6 +11,8 @@ def main():
     parser = argparse.ArgumentParser(description='Update xG data for Leagues')
     parser.add_argument('-l', help='select league (EPL, Ligue_1, Serie_A, \
                         La_Liga, Bundesliga)')
+    parser.add_argument('--only-teams', help="don't update league data, just \
+                        teams", action='store_false')
     parser.add_argument('-s', help='select season in the format 20xx')
     parser.add_argument('-t', help='specify which team to update')
     parser.add_argument('--all', help='use this flag to use all teams',
@@ -39,11 +41,12 @@ def main():
         query_comp = "('" + competition + "')"
 
         # start league updating jobs via object
-        print(colored('starting', 'yellow'), colored(competition, 'blue'))
-        L = League(competition, year)
-        L.insert_league_records()
-        print(colored(competition, 'blue'),
-            colored('league records updated', 'green'))
+        if args['only_teams']:
+            print(colored('starting', 'yellow'), colored(competition, 'blue'))
+            L = League(competition, year)
+            L.insert_league_records()
+            print(colored(competition, 'blue'),
+                colored('league records updated', 'green'))
 
     # update teams in league
     teams = []
@@ -53,20 +56,21 @@ def main():
         teams = []
     else:
         # specified team
-        teams = teams_arg if teams_arg is not None else []
+        teams = [teams_arg] if teams_arg is not None else []
 
     # update teams selected
     for team in teams:
         print(colored('starting', 'yellow'), colored(team, 'white'))
         try:
-            T = Team(team, year, L)
+            T = Team(team, year, competition)
             T.insert_team_data()
             print(colored('team data done', 'magenta'))
             T.insert_player_data()
             print(colored('player data done', 'cyan'))
             T.insert_match_data()
             print(colored('match data done', 'grey'))
-        except:
+        except Exception as e:
+            print(e)
             print(colored(team, 'white'), colored('messed up', 'red'))
         print(colored(team, 'white'), colored('updated', 'green'))
 

@@ -8,7 +8,7 @@ class Team:
         self.competition = competition
         self.name = name
         self.year = year
-        self.page = get_session('team/' + team + '/' + str(year))
+        self.page = get_session('team/' + self.name + '/' + str(self.year))
         self.team_data = self._fetch_team_data()
         self.players = self._fetch_player_data()
         self.matches = self._fetch_match_data()

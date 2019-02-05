@@ -46,6 +46,7 @@ def main():
             print(colored('starting', 'yellow'), colored(competition, 'blue'))
             L = League(competition, year)
             L.insert_league_records()
+            L.insert_match_data()
             print(colored(competition, 'blue'),
                 colored('league records updated', 'green'))
 
@@ -68,8 +69,6 @@ def main():
             print(colored('team data done', 'magenta'))
             T.insert_player_data()
             print(colored('player data done', 'cyan'))
-            T.insert_match_data()
-            print(colored('match data done', 'grey'))
         except Exception as e:
             print(e)
             print(colored(team, 'white'), colored('messed up', 'red'))

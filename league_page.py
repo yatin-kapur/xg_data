@@ -1,4 +1,3 @@
-from requests_html import HTMLSession
 from parse_json import parse_json
 from get_session import get_session
 import insert
@@ -10,6 +9,7 @@ class League:
         self.year = year
         self.page = get_session('league/' + competition + '/' + str(year))
         self.league_records = self._fetch_league_records()
+        self.matches = self._fetch_match_data()
 
     def _fetch_league_records(self):
         divs = self.page.html.find('.block-content')
@@ -36,8 +36,46 @@ class League:
 
         return data
 
+    def _fetch_match_data(self):
+        divs = self.page.html.find('.block-content')
+        mdata = divs[0].text.split('=')[1].split('(')[1].split(')')[0][1:-1]
+
+        data = parse_json(mdata)
+        # flatten with proper labels
+        for match in data:
+            if not match['isResult']:
+                break
+            match['forecast_w'] = match['forecast']['w']
+            match['forecast_d'] = match['forecast']['d']
+            match['forecast_l'] = match['forecast']['l']
+            del match['forecast']
+            match['h_goals'] = match['goals']['h']
+            match['a_goals'] = match['goals']['a']
+            del match['goals']
+            match['h_xg'] = match['xG']['h']
+            match['a_xg'] = match['xG']['a']
+            del match['xG']
+            match['h_id'] = match['h']['id']
+            match['a_id'] = match['a']['id']
+            match['h_title'] = match['h']['title']
+            match['a_title'] = match['a']['title']
+            del match['h']
+            del match['a']
+
+        return data
+
     def insert_league_records(self):
         data_dict = self.league_records
         for i, team in data_dict.items():
             for md in team['history']:
                 insert.insert('league_records', **md)
+
+    def insert_match_data(self):
+        data_dict = self.matches
+        for match in data_dict:
+            if not match['isResult']:
+                break
+            del match['isResult']
+            match['competition'] = self.competition
+            match['season'] = self.year
+            insert.insert('match_data', **match)

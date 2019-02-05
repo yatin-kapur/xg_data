@@ -11,7 +11,6 @@ class Team:
         self.page = get_session('team/' + self.name + '/' + str(self.year))
         self.team_data = self._fetch_team_data()
         self.players = self._fetch_player_data()
-        self.matches = self._fetch_match_data()
 
     def _fetch_team_data(self):
         # get json data for team
@@ -48,34 +47,6 @@ class Team:
 
         return data
 
-    def _fetch_match_data(self):
-        divs = self.page.html.find('.block-content')
-        match_data = divs[0].text.split('(')[-1][1:-3]
-
-        data = parse_json(match_data)
-        # flatten with proper labels
-        for match in data:
-            if not match['isResult']:
-                break
-            match['forecast_w'] = match['forecast']['w']
-            match['forecast_d'] = match['forecast']['d']
-            match['forecast_l'] = match['forecast']['l']
-            del match['forecast']
-            match['h_goals'] = match['goals']['h']
-            match['a_goals'] = match['goals']['a']
-            del match['goals']
-            match['h_xg'] = match['xG']['h']
-            match['a_xg'] = match['xG']['a']
-            del match['xG']
-            match['h_id'] = match['h']['id']
-            match['a_id'] = match['a']['id']
-            match['h_title'] = match['h']['title']
-            match['a_title'] = match['a']['title']
-            del match['h']
-            del match['a']
-
-        return data
-
     def insert_team_data(self):
         # changing so i can edit stuff
         data_dict = self.team_data
@@ -94,13 +65,3 @@ class Team:
             player['competition'] = self.competition
             player['season'] = self.year
             insert.insert('player_data', **player)
-
-    def insert_match_data(self):
-        data_dict = self.matches
-        for match in data_dict:
-            if not match['isResult']:
-                break
-            del match['isResult']
-            match['competition'] = self.competition
-            match['season'] = self.year
-            insert.insert('match_data', **match)

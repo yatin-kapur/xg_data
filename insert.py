@@ -1,14 +1,13 @@
 import MySQLdb
 import dbconfig
 
-db_dict = dbconfig.read_db_config()
-db = MySQLdb.connect(host=db_dict['host'],
-                     user=db_dict['user'],
-                     passwd=db_dict['password'],
-                     db=db_dict['database'])
-
 
 def insert(table_name, **kwargs):
+    db_dict = dbconfig.read_db_config()
+    db = MySQLdb.connect(host=db_dict['host'],
+                        user=db_dict['user'],
+                        passwd=db_dict['password'],
+                        db=db_dict['database'])
     cursor = db.cursor()
     template = "replace into %s (%s) values (%s);"
     column_names = []

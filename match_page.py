@@ -22,4 +22,6 @@ class Match:
             for shot in team:
                 shot['last_action'] = shot.pop('lastAction')
                 shot['shot_type'] = shot.pop('shotType')
+                shot['team'] = shot['h_team'] if shot['h_a'] == 'h' else \
+                    shot['a_team']
                 insert.insert('shot_data', **shot)

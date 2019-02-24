@@ -14,7 +14,8 @@ cursor = db.cursor()
 query = """
         update shot_data s
         join league_records l on s.team = l.title
-        set s.competition = l.league;
+        set s.competition = l.league
+        where s.date > current_date() - 5;
         """
 
 cursor.execute()

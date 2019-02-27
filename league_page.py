@@ -43,24 +43,23 @@ class League:
         data = parse_json(mdata)
         # flatten with proper labels
         for match in data:
-            if not match['isResult']:
-                break
-            match['forecast_w'] = match['forecast']['w']
-            match['forecast_d'] = match['forecast']['d']
-            match['forecast_l'] = match['forecast']['l']
-            del match['forecast']
-            match['h_goals'] = match['goals']['h']
-            match['a_goals'] = match['goals']['a']
-            del match['goals']
-            match['h_xg'] = match['xG']['h']
-            match['a_xg'] = match['xG']['a']
-            del match['xG']
-            match['h_id'] = match['h']['id']
-            match['a_id'] = match['a']['id']
-            match['h_title'] = match['h']['title']
-            match['a_title'] = match['a']['title']
-            del match['h']
-            del match['a']
+            if match['isResult']:
+                match['forecast_w'] = match['forecast']['w']
+                match['forecast_d'] = match['forecast']['d']
+                match['forecast_l'] = match['forecast']['l']
+                del match['forecast']
+                match['h_goals'] = match['goals']['h']
+                match['a_goals'] = match['goals']['a']
+                del match['goals']
+                match['h_xg'] = match['xG']['h']
+                match['a_xg'] = match['xG']['a']
+                del match['xG']
+                match['h_id'] = match['h']['id']
+                match['a_id'] = match['a']['id']
+                match['h_title'] = match['h']['title']
+                match['a_title'] = match['a']['title']
+                del match['h']
+                del match['a']
 
         return data
 
@@ -73,9 +72,8 @@ class League:
     def insert_match_data(self):
         data_dict = self.matches
         for match in data_dict:
-            if not match['isResult']:
-                break
-            del match['isResult']
-            match['competition'] = self.competition
-            match['season'] = self.year
-            insert.insert('match_data', **match)
+            if match['isResult']:
+                del match['isResult']
+                match['competition'] = self.competition
+                match['season'] = self.year
+                insert.insert('match_data', **match)

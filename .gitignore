@@ -5,3 +5,4 @@
 *.xlsx
 config.ini
 dbconfig.py
+/queries

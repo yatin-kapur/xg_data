@@ -64,16 +64,22 @@ class League:
         return data
 
     def insert_league_records(self):
+        lodicts = []
         data_dict = self.league_records
         for i, team in data_dict.items():
             for md in team['history']:
-                insert.insert('league_records', **md)
+                lodicts.append(md)
+
+        insert.insert('league_records', lodicts)
 
     def insert_match_data(self):
+        lodicts = []
         data_dict = self.matches
         for match in data_dict:
             if match['isResult']:
                 del match['isResult']
                 match['competition'] = self.competition
                 match['season'] = self.year
-                insert.insert('match_data', **match)
+                lodicts.append(match)
+
+        insert.insert('match_data', lodicts)

@@ -88,7 +88,8 @@ def main():
             M = Match(match)
             M.insert_shot_data()
             print(colored('shot data done', 'magenta'))
-        except:
+        except Exception as e:
+            print(e)
             print(colored(match, 'white'), colored('messed up', 'red'))
         print(colored(match, 'white'), colored('updated', 'green'))
 

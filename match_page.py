@@ -18,10 +18,13 @@ class Match:
         return data
 
     def insert_shot_data(self):
+        lodicts = []
         for k, team in self.shot_data.items():
             for shot in team:
                 shot['last_action'] = shot.pop('lastAction')
                 shot['shot_type'] = shot.pop('shotType')
                 shot['team'] = shot['h_team'] if shot['h_a'] == 'h' else \
                     shot['a_team']
-                insert.insert('shot_data', **shot)
+                lodicts.append(shot)
+
+        insert.insert('shot_data', lodicts)

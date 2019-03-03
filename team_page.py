@@ -51,17 +51,22 @@ class Team:
         # changing so i can edit stuff
         data_dict = self.team_data
         for category, v in data_dict.items():
+            lodicts = []
             for meta_category, vi in v.items():
                 vi['category'] = category
                 vi['meta_category'] = meta_category
                 vi['team'] = ' '.join(self.name.split('_'))
                 vi['competition'] = self.competition
                 vi['season'] = self.year
-                insert.insert('team_data', **vi)
+                lodicts.append(vi)
+            insert.insert('team_data', lodicts)
 
     def insert_player_data(self):
+        lodicts = []
         data_dict = self.players
         for player in data_dict:
             player['competition'] = self.competition
             player['season'] = self.year
-            insert.insert('player_data', **player)
+            lodicts.append(player)
+
+        insert.insert('player_data', lodicts)

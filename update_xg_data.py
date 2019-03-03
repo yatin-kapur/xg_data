@@ -12,7 +12,7 @@ def main():
     parser.add_argument('-l', help='select league (EPL, Ligue_1, Serie_A, \
                         La_Liga, Bundesliga)')
     parser.add_argument('--skip-league', help="don't update league data, just \
-                        teams", action='store_false')
+                        teams", action='store_true')
     parser.add_argument('-s', help='select season in the format 20xx')
     parser.add_argument('-t', help='specify which team to update')
     parser.add_argument('--all', help='use this flag to use all teams',
@@ -42,13 +42,12 @@ def main():
         query_comp = "('" + competition + "')"
 
         # start league updating jobs via object
-        if args['skip_league']:
+        if args['skip_league'] is False:
             print(colored('starting', 'yellow'), colored(competition, 'blue'))
             L = League(competition, year)
             L.insert_league_records()
-            L.insert_match_data()
             print(colored(competition, 'blue'),
-                colored('league records updated', 'green'))
+                  colored('league records updated', 'green'))
 
     # update teams in league
     teams = []
@@ -62,8 +61,8 @@ def main():
 
     # update teams selected
     for team in teams:
-        print(colored('starting', 'yellow'), colored(team, 'white'))
         try:
+            print(colored('starting', 'yellow'), colored(team, 'white'))
             T = Team(team, year, competition)
             T.insert_team_data()
             print(colored('team data done', 'magenta'))
@@ -83,10 +82,14 @@ def main():
 
     # update matches
     for match in matches:
-        print(colored('starting', 'yellow'), colored(match, 'white'))
+        if match is None:
+            break
+
         try:
+            print(colored('starting', 'yellow'), colored(match, 'white'))
             M = Match(match)
             M.insert_shot_data()
+            M.insert_rosters()
             print(colored('shot data done', 'magenta'))
         except Exception as e:
             print(e)

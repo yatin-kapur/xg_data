@@ -16,6 +16,7 @@ class Match:
         mi = divs[0].find('script')[0].text.split('(')[2].split(')')[0][1:-1]
 
         data = parse_json(mi)
+        data.
 
         return data
 
@@ -24,6 +25,12 @@ class Match:
         sdata = divs[0].find('script')[0].text.split('(')[1].split(')')[0][1:-1]
 
         data = parse_json(sdata)
+        translate = {'EPL': 'EPL',
+                     'La liga': 'La_Liga',
+                     'Bundesliga': 'Bundesliga',
+                     'Serie A': 'Serie_A',
+                     'Ligue 1': 'Ligue_1'}
+        data['league'] = translate[data['league']]
 
         return data
 

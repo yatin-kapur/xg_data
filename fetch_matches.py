@@ -11,11 +11,11 @@ def get_match_ids(competition, year):
                          db=db_dict['database'])
     cursor = db.cursor()
     query = """
-            select distinct id
-            from match_data
-            where competition in %s
+            select distinct match_id
+            from match_dictionary
+            where league in %s
             and season = %s
-            and id not in (select distinct match_id from shot_data);
+            and match_id not in (select distinct id from match_info);
             """
     cursor.execute(query % (competition, year))
     match_ids = np.asarray(cursor.fetchall())

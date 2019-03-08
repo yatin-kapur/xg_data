@@ -9,6 +9,7 @@ class League:
         self.year = year
         self.page = get_session('league/' + competition + '/' + str(year))
         self.league_records = self._fetch_league_records()
+        self.match_data = self._fetch_match_data()
 
     def _fetch_league_records(self):
         divs = self.page.html.find('.block-content')
@@ -34,6 +35,27 @@ class League:
                 md['md'] = i + 1
 
         return data
+
+    def _fetch_match_data(self):
+        divs = self.page.html.find('.block-content')
+        mdata = divs[0].text.split('=')[1].split('(')[1].split(')')[0][1:-1]
+
+        data = parse_json(mdata)
+        lodicts = []
+        # flatten with proper labels
+        for match in data:
+            if match['isResult']:
+                temp_match = {}
+                temp_match['league'] = self.competition
+                temp_match['season'] = self.year
+                temp_match['match_id'] = match['id']
+                lodicts.append(temp_match)
+
+        return lodicts
+
+    def insert_match_data(self):
+        lodicts = self.match_data
+        insert.insert('match_dictionary', lodicts)
 
     def insert_league_records(self):
         lodicts = []

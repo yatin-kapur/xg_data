@@ -37,7 +37,7 @@ class Match:
 
     def insert_match_info(self):
         lodicts = [self.match_info]
-        insert.insert('match_data', lodicts)
+        insert.insert('match_info', lodicts)
 
     def insert_rosters(self):
         lodicts = []
@@ -45,10 +45,10 @@ class Match:
             for j, player in team.items():
                 player['competition'] = self.match_info['league']
                 player['season'] = self.match_info['season']
+                player['position_order'] = player.pop('positionOrder')
                 lodicts.append(player)
 
-        print(lodicts)
-        insert.insert('rosters_data', lodicts)
+        insert.insert('roster_data', lodicts)
 
     def insert_shot_data(self):
         lodicts = []

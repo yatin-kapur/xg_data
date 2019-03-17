@@ -52,6 +52,7 @@ class Match:
                 player['competition'] = self.match_info['league']
                 player['season'] = self.match_info['season']
                 player['position_order'] = player.pop('positionOrder')
+                player['match_id'] = self.match_info['id']
                 lodicts.append(player)
 
         insert.insert('roster_data', lodicts)

@@ -32,6 +32,7 @@ class League:
                 md['id'] = team_id
                 md['title'] = team_title
                 md['league'] = self.competition
+                md['season'] = self.year
                 md['md'] = i + 1
 
         return data

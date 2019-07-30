@@ -85,7 +85,6 @@ def main():
     for match in matches:
         if match is None:
             break
-
         try:
             print(colored('starting', 'yellow'), colored(match, 'white'))
             M = Match(match)
